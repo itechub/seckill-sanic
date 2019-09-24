@@ -14,7 +14,7 @@ import socket
 from sanic.request import Request
 from basictracer.recorder import SpanRecorder
 
-from sanicms import utils
+from config import utils
 
 STANDARD_ANNOTATIONS = {"client": {"cs": [], "cr": []}, "server": {"ss": [], "sr": []}}
 STANDARD_ANNOTATIONS_KEYS = frozenset(STANDARD_ANNOTATIONS.keys())

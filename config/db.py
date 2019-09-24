@@ -5,32 +5,31 @@ import logging
 import opentracing
 
 from aiomysql import create_pool, DictCursor
-from .utils import jsonify
+from config.utils import jsonify
+from config import server
 
 logger = logging.getLogger("sanic")
 
 
 class BaseConnection(object):
-    def __init__(self, pool, span=None, conn=None):
+    def __init__(self, pool, conn=None, trace=None):
         self._pool = pool
-        self._span = span
         self.conn = conn
+        self.trace = trace
 
     @property
     def rowcount(self):
         return self.conn.rowcount
 
     def before(self, name, query, *args):
-        if self._span:
-            span = opentracing.tracer.start_span(
-                operation_name=name, child_of=self._span
-            )
-            span.log_kv({"event": "client"})
-            span.set_tag("component", "db-execute")
-            span.set_tag("db.type", "sql")
-            span.set_tag("db.sql", query)
-            span.set_tag("args", ",".join([str(a) for a in args]))
-            return span
+        if self.trace:
+            with server.jaeger_tracer.start_active_span(name) as scope:
+                scope.span.log_kv({"event": "client"})
+                scope.span.set_tag("component", "db-execute")
+                scope.span.set_tag("db.type", "sql")
+                scope.span.set_tag("db.sql", query)
+                scope.span.set_tag("args", ",".join([str(a) for a in args]))
+                return scope.span
 
     def finish(self, span):
         if span:
@@ -54,12 +53,6 @@ class BaseConnection(object):
         res = await cursor.fetchall()
         self.finish(span)
         return res
-
-    async def add_listener(self, channel, callback):
-        await self.conn.add_listener(channel, callback)
-
-    async def remove_listener(self, channel, callback):
-        await self.conn.remove_listener(channel, callback)
 
     async def execute(self, query: str, *args, timeout: float = None):
         span = self.before("execute", query, *args)
@@ -160,9 +153,10 @@ class ConnectionPool(object):
     PGDATABASE = None
     pool = None
 
-    def __init__(self, loop=None):
+    def __init__(self, loop=None, trace=False):
         self.conn = None
         self._loop = loop
+        self._trace = trace
         self._pool = None
 
     async def init(self, config, conn=None):
@@ -172,7 +166,7 @@ class ConnectionPool(object):
         return self
 
     def acquire(self, request=None):
-        return BaseConnection(self._pool, span=request["span"] if request else None)
+        return BaseConnection(self._pool, None, trace=self._trace)
 
     def transaction(self, request=None):
         return TransactionConnection(

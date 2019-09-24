@@ -8,6 +8,9 @@ APP_ID = "seckill-service"
 HOST = os.environ.get("SERVER_HOST", None)
 PORT = os.environ.get("SERVER_PORT", 8000)
 
+TRACE_ALL = os.environ.get("TRACE_ALL", False)
+JAEGER_HOST = os.environ.get("JAEGER_HOST", "localhost")
+
 DB_CONFIG = {
     "host": os.environ.get("MYSQL_SERVICE_HOST", "localhost"),
     "user": os.environ.get("MYSQL_SERVICE_USER", "mysql"),

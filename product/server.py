@@ -7,6 +7,7 @@
 
 import logging
 from sanic import Sanic
+from sanic.response import json
 
 from views import seckill_bp
 from config import load_config
@@ -21,7 +22,7 @@ app.blueprint(seckill_bp)
 
 @app.route("/")
 async def index(request):
-    return "seckill service"
+    return json("seckill service")
 
 
 if __name__ == "__main__":
