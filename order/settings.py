@@ -3,10 +3,10 @@ import os
 """
 Basic config
 """
-APP_ID = "seckill-product"
+APP_ID = "seckill-order"
 
 HOST = os.environ.get("SERVER_HOST", None)
-PORT = int(os.environ.get("SERVER_PORT", 8000))
+PORT = os.environ.get("SERVER_PORT", 8000)
 
 TRACE_ALL = os.environ.get("TRACE_ALL", False)
 JAEGER_HOST = os.environ.get("JAEGER_HOST", "localhost")
@@ -16,13 +16,13 @@ DB_CONFIG = {
     "user": os.environ.get("MYSQL_SERVICE_USER", "mysql"),
     "password": os.environ.get("MYSQL_SERVICE_PASSWORD", None),
     "port": int(os.environ.get("MYSQL_SERVICE_PORT", 3306)),
-    "database": os.environ.get("MYSQL_SERVICE_DB_NAME", "seckill_product"),
+    "database": os.environ.get("MYSQL_SERVICE_DB_NAME", "seckill_order"),
 }
 
 SWAGGER = {
     "version": "1.0.0",
-    "title": "SECKILL PRODUCER API",
-    "description": "PRODUCT SERVICE API BASED ON SANIC",
+    "title": "SECKILL ORDER API",
+    "description": "SECKILL ORDER SERVICE API BASED ON SANIC",
     "terms_of_service": "Use with caution!",
     "termsOfService": ["application/json"],
     "contact_email": "shady@camfire.com",

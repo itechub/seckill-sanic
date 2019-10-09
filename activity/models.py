@@ -6,29 +6,21 @@
 #
 import datetime
 from peewee import MySQLDatabase
-from peewee import (
-    Model,
-    CharField,
-    IntegerField,
-    BooleanField,
-    FloatField,
-    DateTimeField,
-    PrimaryKeyField,
-)
+from peewee import Model, CharField, IntegerField, DateTimeField, PrimaryKeyField
 from config import load_config
 
 config = load_config()
 db = MySQLDatabase(**config["DB_CONFIG"])
 
 
-class Product(Model):
+class Activity(Model):
     id = PrimaryKeyField()
-    name = CharField(max_length=250, unique=True)
-    description = CharField(max_length=600, null=True)
-    price = FloatField(default=0)
-    inventory = IntegerField(default=0)
+    name = CharField(max_length=250)
+    product = IntegerField()
+    start_time = DateTimeField()
+    end_time = DateTimeField()
     created = DateTimeField(default=datetime.datetime.now)
 
     class Meta:
-        table_name = "product"
+        table_name = "activity"
         database = db

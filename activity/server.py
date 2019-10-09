@@ -11,8 +11,8 @@ from sanic.response import json
 
 from views import seckill_bp
 from config import load_config
+from config.client import Client
 from config.server import app
-from config.server import tracing
 
 
 logger = logging.getLogger("sanic")
@@ -21,9 +21,19 @@ logger = logging.getLogger("sanic")
 app.blueprint(seckill_bp)
 
 
+@app.listener("before_server_start")
+async def before_srver_start(app, loop):
+    app.product_client = Client("seckill-product", app=app)
+
+
+@app.listener("before_server_stop")
+async def before_server_stop(app, loop):
+    app.product_client.close()
+
+
 @app.route("/")
 async def index(request):
-    return json("seckill products")
+    return json("activities services")
 
 
 if __name__ == "__main__":
