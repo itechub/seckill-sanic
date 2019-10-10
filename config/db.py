@@ -35,46 +35,55 @@ class BaseConnection(object):
         if span:
             span.finish()
 
-    async def cursor_execute(self, query, *args):
+    async def cursor_execute(self, query: str, *args):
         cursor = await self.conn.cursor(DictCursor)
-        res = await cursor.execute(query)
+        res = await cursor.execute(query, *args)
         return cursor
 
-    async def fetchone(self, query, *args, timeout=None):
+    async def fetchone(self, query, *args):
         span = self.before("fetchone", query, *args)
         cursor = await self.cursor_execute(query)
         res = await cursor.fetchone()
         self.finish(span)
         return res
 
-    async def fetchall(self, query, *args, timeout=None):
+    async def fetchall(self, query, *args):
         span = self.before("fetchall", query, *args)
-        cursor = await self.cursor_execute(query)
+        cursor = await self.cursor_execute(query, *args)
         res = await cursor.fetchall()
         self.finish(span)
         return res
 
-    async def execute(self, query: str, *args, timeout: float = None):
-        span = self.before("execute", query, *args)
-        res = await self.conn.execute(query, *args, timeout=timeout)
+    async def insert(self, query, table: str = None, *args):
+        span = self.before("insert", query, *args)
+        cursor = await self.cursor_execute(query, *args)
+        await self.conn.commit()
+        res = True
+        if table:
+            query = f"SELECT * from {table} where id={cursor.lastrowid}"
+            res = await self.fetchone(query)
         self.finish(span)
         return res
 
-    async def executemany(self, command: str, args, timeout: float = None):
+    # async def execute(self, query: str, *args):
+    #    cursor = await self.cursor_execute(query, *args)
+    #    return res
+
+    async def executemany(self, command: str, args):
         span = self.before("executemany", command, args)
-        res = await self.conn.executemmay(command, args, timeout=timeout)
+        res = await self.conn.executemmay(command, args)
         self.finish(span)
         return res
 
-    async def fetchval(self, query, *args, column=0, timeout=None):
+    async def fetchval(self, query, *args, column=0):
         span = self.before("fetchval", query, *args)
-        res = await self.conn.fetchval(query, *args, column=column, timeout=timeout)
+        res = await self.conn.fetchval(query, *args, column=column)
         self.finish(span)
         return res
 
-    async def prepare(self, query, *args, timeout=None):
+    async def prepare(self, query, *args):
         span = self.before("prepare", query, *args)
-        res = await self.conn.prepare(query, *args, timeout=None)
+        res = await self.conn.prepare(query, *args)
         self.finish(span)
         return res
 
@@ -97,7 +106,7 @@ class BaseConnection(object):
             schema=schema,
             encoder=encoder,
             decoder=decoder,
-            binary=binary
+            binary=binary,
         )
         self.finish(span)
 
