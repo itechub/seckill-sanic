@@ -1,0 +1,123 @@
+# docker-compose.yml
+# Copyright (C) 2018 shady <shady@MrRobot.local>
+#
+version: "3"
+services:
+  mysql:
+    image: itechub/sanic-mysql:latest
+    build: ./deployment/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "sanicroot"
+      MYSQL_DATABASE: "sanic_seckill"
+    volumes:
+      - ${DOCKER_DIR}/volumes/data:/var/lib/mysql # mysql data source
+      - ${DOCKER_DIR}/volumes/log:/disk/log # mysql log
+    networks:
+      - sanic_seckill
+
+  consul:
+    image: itechub/sanic-consul:latest
+    build: ./deployment/consul
+    ports:
+      - "8501:8500"
+    networks:
+      - sanic_seckill
+
+  jaeger:
+    image: itechub/sanic-jaeger:latest
+    build: ./deployment/jaeger
+    networks:
+      - sanic_seckill
+    ports:
+      - "8502:16686"
+
+  product:
+    image: itechub/product_service:latest
+    build:
+      context: ./
+      dockerfile: ./deployment/service/Dockerfile
+      args:
+        - service=product
+    depends_on:
+      - mysql
+    ports:
+      - "8503:8503"
+    environment:
+      SERVER_HOST: "localhost"
+      SERVER_PORT: 8503
+      MYSQL_SERVICE_DB_NAME: "sanic_seckill"
+      MYSQL_SERVICE_USER: "root"
+      MYSQL_SERVICE_PASSWORD: "sanicroot"
+      MYSQL_SERVICE_HOST: "mysql"
+      MYSQL_SERVICE_PORT: 3306
+      SANIC_SETTINGS_MODULE: "settings"
+      ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+      ACCESS_CONTROL_ALLOW_HEADERS: "Content-Type"
+      ACCESS_CONTROL_ALLOW_METHODS: "POST, PUT, DELETE, GET"
+      CONSUL_AGENT_HOST: 'consul'
+      CONSUL_AGENT_PORT: 8500
+    command: ["python", "-m", "server"]
+    networks:
+      - sanic_seckill
+
+  activity:
+    image: itechub/activity_service:latest
+    build:
+      context: ./
+      dockerfile: ./deployment/service/Dockerfile
+      args:
+        - service=activity
+    depends_on:
+      - mysql
+    ports:
+      - "8504:8504"
+    environment:
+      SERVER_HOST: "localhost"
+      SERVER_PORT: 8504
+      MYSQL_SERVICE_DB_NAME: "sanic_seckill"
+      MYSQL_SERVICE_USER: "root"
+      MYSQL_SERVICE_PASSWORD: "sanicroot"
+      MYSQL_SERVICE_HOST: "mysql"
+      MYSQL_SERVICE_PORT: 3306
+      SANIC_SETTINGS_MODULE: "settings"
+      ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+      ACCESS_CONTROL_ALLOW_HEADERS: "Content-Type"
+      ACCESS_CONTROL_ALLOW_METHODS: "POST, PUT, DELETE, GET"
+      CONSUL_AGENT_HOST: 'consul'
+      CONSUL_AGENT_PORT: 8500
+    command: ["python", "-m", "server"]
+    networks:
+      - sanic_seckill
+
+  order:
+    image: itechub/order_service:latest
+    build:
+      context: ./
+      dockerfile: ./deployment/service/Dockerfile
+      args:
+        - service=order
+    depends_on:
+      - mysql
+    ports:
+      - "8505:8505"
+    environment:
+      SERVER_HOST: "localhost"
+      SERVER_PORT: 8505
+      MYSQL_SERVICE_DB_NAME: "sanic_seckill"
+      MYSQL_SERVICE_USER: "root"
+      MYSQL_SERVICE_PASSWORD: "sanicroot"
+      MYSQL_SERVICE_HOST: "mysql"
+      MYSQL_SERVICE_PORT: 3306
+      SANIC_SETTINGS_MODULE: "settings"
+      ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+      ACCESS_CONTROL_ALLOW_HEADERS: "Content-Type"
+      ACCESS_CONTROL_ALLOW_METHODS: "POST, PUT, DELETE, GET"
+      CONSUL_AGENT_HOST: 'consul'
+      CONSUL_AGENT_PORT: 8500
+    command: ["python", "-m", "server"]
+    networks:
+      - sanic_seckill
+networks:
+  sanic_seckill:
+
+# vim:ft=ansible

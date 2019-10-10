@@ -6,7 +6,7 @@ Basic config
 APP_ID = "seckill-product"
 
 HOST = os.environ.get("SERVER_HOST", None)
-PORT = int(os.environ.get("SERVER_PORT", 8000))
+PORT = int(os.environ.get("SERVER_PORT", 8503))
 
 TRACE_ALL = os.environ.get("TRACE_ALL", False)
 JAEGER_HOST = os.environ.get("JAEGER_HOST", "localhost")
