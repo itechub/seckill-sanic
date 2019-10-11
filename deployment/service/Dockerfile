@@ -14,4 +14,10 @@ ARG service
 
 ADD ${service}/. /service
 
+COPY ./deployment/service/entrypoint.sh  /service
+
+RUN chmod +x /service/entrypoint.sh
+
+ENTRYPOINT ["/service/entrypoint.sh"]
+
 ADD config /service/config

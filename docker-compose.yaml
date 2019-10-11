@@ -7,7 +7,7 @@ services:
     image: itechub/sanic-mysql:latest
     build: ./deployment/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: "sanicroot"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: "sanic_seckill"
     volumes:
       - ${DOCKER_DIR}/volumes/data:/var/lib/mysql # mysql data source
@@ -47,13 +47,14 @@ services:
       SERVER_PORT: 8503
       MYSQL_SERVICE_DB_NAME: "sanic_seckill"
       MYSQL_SERVICE_USER: "root"
-      MYSQL_SERVICE_PASSWORD: "sanicroot"
+      MYSQL_SERVICE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_SERVICE_HOST: "mysql"
       MYSQL_SERVICE_PORT: 3306
       SANIC_SETTINGS_MODULE: "settings"
       ACCESS_CONTROL_ALLOW_ORIGIN: "*"
       ACCESS_CONTROL_ALLOW_HEADERS: "Content-Type"
       ACCESS_CONTROL_ALLOW_METHODS: "POST, PUT, DELETE, GET"
+      JAEGER_HOST: "jaeger"
       CONSUL_AGENT_HOST: 'consul'
       CONSUL_AGENT_PORT: 8500
     command: ["python", "-m", "server"]
@@ -76,13 +77,15 @@ services:
       SERVER_PORT: 8504
       MYSQL_SERVICE_DB_NAME: "sanic_seckill"
       MYSQL_SERVICE_USER: "root"
-      MYSQL_SERVICE_PASSWORD: "sanicroot"
+      MYSQL_SERVICE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_SERVICE_HOST: "mysql"
       MYSQL_SERVICE_PORT: 3306
       SANIC_SETTINGS_MODULE: "settings"
       ACCESS_CONTROL_ALLOW_ORIGIN: "*"
       ACCESS_CONTROL_ALLOW_HEADERS: "Content-Type"
       ACCESS_CONTROL_ALLOW_METHODS: "POST, PUT, DELETE, GET"
+      TRACE_ALL: "true"
+      JAEGER_HOST: "jaeger"
       CONSUL_AGENT_HOST: 'consul'
       CONSUL_AGENT_PORT: 8500
     command: ["python", "-m", "server"]
@@ -105,13 +108,14 @@ services:
       SERVER_PORT: 8505
       MYSQL_SERVICE_DB_NAME: "sanic_seckill"
       MYSQL_SERVICE_USER: "root"
-      MYSQL_SERVICE_PASSWORD: "sanicroot"
+      MYSQL_SERVICE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_SERVICE_HOST: "mysql"
       MYSQL_SERVICE_PORT: 3306
       SANIC_SETTINGS_MODULE: "settings"
       ACCESS_CONTROL_ALLOW_ORIGIN: "*"
       ACCESS_CONTROL_ALLOW_HEADERS: "Content-Type"
       ACCESS_CONTROL_ALLOW_METHODS: "POST, PUT, DELETE, GET"
+      JAEGER_HOST: "jaeger"
       CONSUL_AGENT_HOST: 'consul'
       CONSUL_AGENT_PORT: 8500
     command: ["python", "-m", "server"]
