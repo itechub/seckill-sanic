@@ -1,3 +1,4 @@
+-e .
 jaeger-client==4.1.0
 sanic_opentracing
 aiomysql==0.0.20
