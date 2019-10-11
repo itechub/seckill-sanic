@@ -33,7 +33,10 @@ app.blueprint(swagger_blueprint)
 app.config = config
 jaeger_tracer = init_tracer(appid, jaeger_host)
 tracing = SanicTracing(
-    tracer=jaeger_tracer, trace_all_requests=True, app=app, exceptions=[RuntimeError]
+    tracer=jaeger_tracer,
+    trace_all_requests=trace_all,
+    app=app,
+    exceptions=[RuntimeError],
 )
 
 

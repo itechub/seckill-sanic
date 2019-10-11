@@ -1,6 +1,6 @@
 # Sanic-Seckill
 
-基于 sanic 实现秒杀场景需求，采用微服务基础架构实现。  
+基于 sanic 实现秒杀场景需求，采用微服务基础架构实现。
 项目模拟简单秒杀服务场景，拆分为三个微服务进行实现：
 
 * 产品服务
@@ -53,19 +53,36 @@ Read this in other languages:  [English][English], [简体中文][简体中文]
 ![Jaeger](https://github.com/itechub/seckill-sanic/raw/master/assets/images/jaeger_sanic.jpg)
 
 ## 运行环境
-### docker 运行环境
+### docker-compose 运行环境
+#### 配置对应环境变量 .env
+可以根据 .env_template 文件进行创建。
+
+```
+DOCKER_DIR=~/you/project/patch/sanic_seckill/seckill/deployment
+MYSQL_ROOT_PASSWORD=sanicroot
+```
+
+#### 开启服务
+
 ``` 
-# TODO
-docker-compose up -d
+docker-compose up 
 ```
 
-### 开发环境搭建
-> 设置环境变量值 SANIC_CONFIG_MODULE
+#### 访问服务
+默认 docker-compose 会暴露相关的服务端口到 Host 主机，可以根据环境需求编辑`docker-compose` 中对应的端口映射。
 
-```
-export SANIC_SETTINGS_MODULE=product.settings
-export TRACE_ALL=True
-```
+* Consul UI:  `http://localhost:8501`
+* Jaeger UI:  `http://localhost:8502`
+* Product Service:  `http://localhost:8503`
+* Activity Service:  `http://localhost:8504`
+* Order Service:  `http://localhost:8505`
+
+如果一切运行正常，你可以看到 consul 界面上服务已经成功注册，并且相关 health 状态检查一切正常。
+默认 `docker-compose.yml` 中只有 activity service `TRACE_ALL=true`，所以在 jaeger 界面可以看到对应的请求追踪。
+
+### 本地开发环境搭建
+#### docker 卷挂载方式
+#### Python 虚拟环境
 
 ## 技术实现
 ### 服务端
