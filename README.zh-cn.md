@@ -67,6 +67,7 @@ MYSQL_ROOT_PASSWORD=sanicroot
 docker-compose build  
 docker-compose up 
 ```
+![Docker-Compose](https://github.com/itechub/seckill-sanic/raw/master/assets/images/docker-compose.jpg)
 
 #### 访问服务
 默认 docker-compose 会暴露相关的服务端口到 Host 主机，可以根据环境需求编辑`docker-compose` 中对应的端口映射。
@@ -77,8 +78,9 @@ docker-compose up
 * Activity Service:  `http://localhost:8504`
 * Order Service:  `http://localhost:8505`
 
-如果一切运行正常，你可以看到 consul 界面上服务已经成功注册，并且相关 health 状态检查一切正常。
-默认 `docker-compose.yml` 中只有 activity service `TRACE_ALL=true`，所以在 jaeger 界面可以看到对应的请求追踪。
+如果一切运行正常，你可以看到 consul 界面上服务已经成功注册，并且相关 health 状态检查一切正常。默认 `docker-compose.yml` 中只有 activity service `TRACE_ALL=true`，所以在 jaeger 界面可以看到对应的请求追踪。
+
+![Consul](https://github.com/itechub/seckill-sanic/raw/master/assets/images/consul.jpg)
 
 ### 本地开发环境搭建
 #### docker 卷挂载方式

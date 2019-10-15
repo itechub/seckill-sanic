@@ -60,6 +60,8 @@ Create your local `.env` file, you can use the `.env_template` as a starting poi
 DOCKER_DIR=~/you/project/patch/sanic_seckill/seckill/deployment
 MYSQL_ROOT_PASSWORD=sanicroot
 ```
+![Docker-Compose](https://github.com/itechub/seckill-sanic/raw/master/assets/images/docker-compose.jpg)
+
 
 #### Start all services 
 Build and Start all services with the following command using docker-compose. You can adjust the port mapping or other setting by editing the `docker-compose.yml` file.
@@ -80,6 +82,8 @@ By default, docker-compose will bind services port to local host machine. Change
 If everything works as expected, you can see all three microservices are registered with healthy check status in `consul` web GUI.
 
 By default, `TRACE_ALL` is set to true within the `activity service`, which is configured in `docker-compose.yml`, so when you make request to `activity service`, you can view all request trace in jaeger web GUI.
+
+![Consul](https://github.com/itechub/seckill-sanic/raw/master/assets/images/consul.jpg)
 
 ### Local environment setup
 #### docker volume 
