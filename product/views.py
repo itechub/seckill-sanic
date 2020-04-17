@@ -6,7 +6,6 @@
 #
 
 import logging
-import ujson
 import time
 import asyncio
 
